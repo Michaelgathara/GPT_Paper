@@ -1,0 +1,80 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{GPT (to be changed)}
+
+\author{\IEEEauthorblockN{Michael Gathara}
+\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\and
+\IEEEauthorblockN{Akshar Patel}
+\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\and
+\IEEEauthorblockN{Vaishak Menon}
+\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\and
+\IEEEauthorblockN{Jason Liu}
+\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\and
+\IEEEauthorblockN{Elizabeth Molen}
+\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\and
+\IEEEauthorblockN{Trenton Davis}
+\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+}
+
+\maketitle
+
+\begin{abstract}
+Large language models (LLMs) are a subset of artificial intelligence (AI)
+models that have the ability to intake, understand, and generate human 
+readable text. Since their inception, these models have found rapid success and widespread adoption in a vast range of industries and 
+use cases including software engineering, healthcare, insurance, 
+and supply-chain management. The most powerful LLMs are often built on 
+an architectural framework called a transformer which calculates importance of different parts of the input and weighs the relationship between 
+them in order to produce more coherent and relevant outputs. A specific type of LLM- generative pretrained 
+transformers (GPTs)- stand out as one of the most used and adopted models as
+they are tuned to be highly effective at understanding conversational 
+context and generating coherent and relevant text. Built on top of the transformer architecture, GPTs are often more
+finely tuned to perform specific tasks after
+first being trained on a large corupus of less specific textual data- hence the pre-trained portion of the name. While the transformer has remained the 
+core of these models, many different optimizations have been proposed and 
+implemented over the past several years including flash attention, blank, and blank. In this work, we implement a scratch-built GPT equipped with some 
+of these optimizations, train it on several different datasets, and then test 
+it on several tasks and analyze some of the features of the model. 
+\end{abstract}
+
+
+\section{Introduction}
+In their seminal 2017 paper, Vaswani et al. introduced the 
+transformer architecture and set the stage for the many iterations of LLMs that 
+have come in the years since \cite{vaswani2023attentionneed}. This original paper focused on the core attention 
+component of the transformer which calculates the interactions between different
+input tokens and uses this contextual knowledge to more dynamically generate 
+relevant output text. 
+
+\section{Methods}
+\subsection{Model Architecture}
+\subsection{Training}
+\subsection{Evaluation and Introspection}
+
+\section{Results}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+\break{}
+\bibliographystyle{unsrt}
+\bibliography{references} % .bib 
+
+\end{document}
