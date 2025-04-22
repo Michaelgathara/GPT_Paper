@@ -1,0 +1,69 @@
+We present a transformer-based language model that employs a novel attention mechanism called Multi-headed Latent Attention (MLA). This section details the architecture of our model and the training methodology.
+\subsection{Model Architecture}
+Our model follows the general transformer architecture~\cite{vaswani2017attention} with several key modifications. The model consists of 12 transformer layers, each containing a multiheaded latent attention module and a feed-forward network. We use an embedding dimension of 768 and 12 attention heads throughout the model. The context window is limited to 512 tokens.
+The input token sequence is first embedded using a token embedding layer and combined with learned positional embeddings:
+\begin{equation}
+h_0 = W_e \cdot x + W_p
+\end{equation}
+\noindent where $W_e \in \mathbb{R}^{V \times d}$ is the token embedding matrix for vocabulary size $V$ and embedding dimension $d$, and $W_p \in \mathbb{R}^{n \times d}$ is the positional embedding matrix for a maximum sequence length $n$.
+\subsubsection{Multi-headed Latent Attention (MLA)}
+\input{sections/mla.tex}
+\subsubsection{Feed-Forward Networks}
+After the attention layer, each transformer block contains a feed-forward network using SwiGLU activation~\cite{shazeer2020glu}, which has been shown to outperform ReLU in language models. The feed-forward network is defined as:
+\begin{align}
+\text{Swish}(xW_1) \otimes (xW_2) \
+\text{FFN}(x) = \text{SwiGLU}(x)W_3
+\end{align}
+\noindent where $W_1, W_2 \in \mathbb{R}^{d \times 4d}$ and $W_3 \in \mathbb{R}^{4d \times d}$ are learned parameter matrices, $\text{Swish}(x) = x \cdot \sigma(x)$ is the swish activation function, and $\otimes$ represents element-wise multiplication.
+Each attention and feed-forward sublayer is wrapped with a residual connection and layer normalization:
+\begin{align}
+  h'_i &= \mathrm{LN}(h_i) \\
+  h_{i+\frac12} &= h_i + \mathrm{MLA}(h'_i) \\
+  h''_{i+\frac12} &= \mathrm{LN}(h_{i+\frac12}) \\
+  h_{i+1} &= h_{i+\frac12} + \mathrm{FFN}(h''_{i+\frac12})
+\end{align}
+\noindent where $\text{LN}$ denotes layer normalization.
+\subsubsection{Tokenization}
+We train a custom Byte-Pair Encoding (BPE) tokenizer~\cite{sennrich2016neural} on the Wikitext-103 corpus with a vocabulary size of 32,000. The tokenizer includes special tokens \texttt{[PAD]}, \texttt{[UNK]}, \texttt{[CLS]}, \texttt{[SEP]}, \texttt{[MASK]}, \texttt{[BOS]}, and \texttt{[EOS]}. We use whitespace pre-tokenization and set a minimum token frequency of 2 to filter out rare tokens.
+\subsection{Training}
+\subsubsection{Dataset}
+We train our model on the Wikitext-103 corpus~\cite{merity2016pointer}, a collection of good quality Wikipedia articles containing approximately xxx million tokens. Prior to tokenization, we apply a text cleaning procedure to remove markup elements and normalize whitespace. The cleaned text is then tokenized and chunked into sequences of 512 tokens for training.
+\subsubsection{Training Process}
+The model is trained using distributed data parallelism across multiple NVIDIA H100 GPUs. We employ mixed precision training (FP16) with gradient scaling to improve computational efficiency while maintaining numerical stability. The training process uses a batch size of 72 per GPU with gradient accumulation over 4 steps, resulting in an effective batch size of 288.
+We implement model parallelism using PyTorch's DistributedDataParallel (DDP) framework. The dataset is partitioned across GPUs using a DistributedSampler to ensure each worker processes different data. The training loop includes the following steps:
+\begin{enumerate}
+    \item Sample a batch $(x, y)$ from the data loader
+    \item Perform a forward pass with mixed precision: $\text{logits}, \text{loss} = \text{model}(x, y)$
+    \item Scale the loss
+    \item Perform a backward pass with gradient scaling
+    \item If $i \bmod \text{accumulation_steps} = 0$:
+    \begin{enumerate}
+        \item Clip gradients to maximum norm 1.0
+        \item Update model parameters
+        \item Zero gradients
+        \item Update learning rate with scheduler
+    \end{enumerate}
+    \item If $i \bmod \text{eval_interval} = 0$:
+    \begin{enumerate}
+        \item Evaluate on validation set
+        \item Save checkpoint if validation loss improved
+    \end{enumerate}
+\end{enumerate}
+\noindent This process continues for a maximum of 15,000 iterations or until convergence.
+\subsubsection{Optimization}
+We optimize our model using AdamW~\cite{loshchilov2018decoupled} with a weight decay of $1 \times 10^{-4}$ and beta parameters $\beta_1 = 0.9$, $\beta_2 = 0.95$. The initial learning rate is set to $1 \times 10^{-3}$.
+Our learning rate schedule combines a linear warmup phase with a cosine decay phase:
+\begin{equation}
+\text{lr}(t) =
+\begin{cases}
+\text{lr}{\text{max}} \cdot \frac{t}{\text{warmup}} & \text{if } t < \text{warmup} \\
+\ldots
+\end{cases}
+\end{equation}
+\noindent where $\text{warmup} = 500$ iterations and $\text{max} = 15,000$ iterations. This schedule helps stabilize early training and gradually reduces the learning rate to achieve better convergence.
+\noindent where \textit{warmup steps} eq 500 and \textit{max steps} eq 15,000. This schedule helps stabilize early training and gradually reduces the learning rate to achieve better convergence.
+To prevent gradient explosion, we apply gradient clipping with a maximum norm of 1.0 before each optimizer step.
+\input{sections/hyperparameter}
+\subsubsection{Evaluation and Checkpointing}
+We evaluate the model on the validation set every 100 iterations by computing the average loss over multiple batches. The best model is selected based on the lowest validation loss achieved during training. Additionally, we save periodic checkpoints every 500 iterations to enable resumption of training if needed.
+To monitor training progress, we log key metrics including training loss, validation loss, learning rate, and throughput (tokens processed per second) using TensorBoard. After training, we generate sample text from the best checkpoint to qualitatively assess the model's capabilities.
