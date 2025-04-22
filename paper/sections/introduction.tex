@@ -1,6 +1,42 @@
+In recent years, artificial intelligence (AI) models have been gaining popularity in both personal use-cases 
+as well as in many different industries. Among these, none seem to have risen to such a high level of 
+popular adoption as large language models (LLMs) which are AI models that can intake, understand, and generate
+human-readable text \cite{brown2020languagemodelsfewshotlearners}. Usage of these has gained traction in a broad 
+range of industries including 
+research, healthcare, supply-chain, and software engineering 
+\cite {liang2024mappingincreasingusellms} \cite{ZHANG2025102883} \cite{urlana2024llmsindustriallensdeciphering}. 
+The most powerful LLMs are often built on 
+an architectural framework called a transformer which calculates importance of different parts of the input and weighs 
+the relationship between them in order to produce more coherent and relevant outputs.
 In their seminal 2017 paper, Vaswani et al. introduced the 
 transformer architecture and set the stage for the many iterations of LLMs that 
 have come in the years since \cite{vaswani2023attentionneed}. This original paper focused on the core attention 
 component of the transformer which calculates the interactions between different
 input tokens and uses this contextual knowledge to more dynamically generate 
-relevant output text.
+relevant output text. While a transformative architecture, the core attention mechanism does suffer from 
+a few key drawbacks that have motivated the need for some important optimizations in the years since. 
+Because it calculates interactions between every input token pair, the attention mechanism suffers from 
+a quadratic time and memory complexity leading to some amnesia inducing context length limitations. Additionally, 
+models immediately following the transformer architecture follow a single uniform application of the attention 
+mechanism at their different layers. This lack of heterogenity and depth didn't allow the models to 
+fully capture the nuanced and dynamic interactions between the input tokens.
+
+Generative pre-trained transformers (GPTs) are a specific instantiation of LLMs that use the transformer architecture as a backbone. 
+GPTs are engineered to be highly effective at generating relevant text and at performing 
+conversationally oriented tasks by first pre-training them on a huge corpus of text and then fine tuning
+them for their specific tasks- a process that was introduced by Radford et al. \cite{radford2018improving}. Following 
+that initial introduction, GPTs utilizing magnitudes more parameters began to be explored- consistently
+increasing their usefulness in conversational tasks. Specifically, post-training capacity of the 
+models to learn and respond to instructions deliverd to them as inputs was detailed by Brown et al. in their 
+2020 paper introducing GPT-3 \cite{brown2020languagemodelsfewshotlearners}. 
+While making significant bounds in model performance and practical usefulness, these architectures still 
+suffered from the same core limitations of the original transformer setup that they are built on top of. 
+
+In the present work, we implement a from-scratch trained GPT architecture but we also explore some of the 
+optimizations that have been introduced to address the aformentioned limitations of the transformer architecture. 
+Two of the core optimizations that we utilize are flash-attention and multi-layer attention. Flash attention  addresses
+the issue of quadratic memory complexity in the original attention mechanism- an issue that significantly slows down 
+the computation as expensive GPU memory transfers abound with full attention scores being computed and scored. 
+Flash attention focuses on making the attention mechanism input/output (IO) aware and splits the computations 
+into tiles that can fit on a GPUs on-chip memory and eschew temporally costly IO operations \cite{dao2022flashattentionfastmemoryefficientexact}. In our setup, we 
+use flash attention and see significant improvements in our model training time as well as inference 
