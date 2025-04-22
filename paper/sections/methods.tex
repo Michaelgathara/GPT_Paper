@@ -63,6 +63,7 @@ Our learning rate schedule combines a linear warmup phase with a cosine decay ph
 \noindent where $\text{warmup} = 500$ iterations and $\text{max} = 15,000$ iterations. This schedule helps stabilize early training and gradually reduces the learning rate to achieve better convergence.
 \noindent where \textit{warmup steps} eq 500 and \textit{max steps} eq 15,000. This schedule helps stabilize early training and gradually reduces the learning rate to achieve better convergence.
 To prevent gradient explosion, we apply gradient clipping with a maximum norm of 1.0 before each optimizer step.
+\subsubsection{Hyperparameter Tuning}
 \input{sections/hyperparameter}
 \subsubsection{Evaluation and Checkpointing}
 We evaluate the model on the validation set every 100 iterations by computing the average loss over multiple batches. The best model is selected based on the lowest validation loss achieved during training. Additionally, we save periodic checkpoints every 500 iterations to enable resumption of training if needed.
