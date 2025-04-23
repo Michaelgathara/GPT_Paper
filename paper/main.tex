@@ -11,25 +11,24 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
+\newcommand{\authoremail}[2]{%
+  \IEEEauthorblockN{#1}
+  \IEEEauthorblockA{\textit{University of Alabama at Birmingham} \\ #2}
+}
+
 \title{GPT (to be changed)}
 
-\author{\IEEEauthorblockN{Michael Gathara}
-\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\author{\authoremail{Michael Gathara}{mikegtr@uab.edu}
 \and
-\IEEEauthorblockN{Akshar Patel}
-\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\authoremail{Yang (Jason) Liu}{yliu0602@uab.edu}
 \and
-\IEEEauthorblockN{Vaishak Menon}
-\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\authoremail{Vaishak Menon}{vmenon19@uab.edu}
 \and
-\IEEEauthorblockN{Jason Liu}
-\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\authoremail{Elizabeth Molen}{emolen@uab.edu}
 \and
-\IEEEauthorblockN{Elisabeth Molen}
-\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\authoremail{Trenton Davis}{trentd@uab.edu}
 \and
-\IEEEauthorblockN{Trenton Davis}
-\IEEEauthorblockA{\textit{University of Alabama at Birmingham}}
+\authoremail{Akshar Patel}{akshar2020@uab.edu}
 }
 
 \maketitle
@@ -77,7 +76,7 @@ it on several tasks and analyze some of the features of the model.
 \input{sections/conclusion.tex}
 
 \break{}
-\bibliographystyle{IEEEtran}
+\bibliographystyle{unsrt}
 \bibliography{references} % .bib 
 
 \end{document}
