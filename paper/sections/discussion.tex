@@ -1,7 +1,27 @@
 
 \subsection{Results Analysis}
+Average loss, best model loss, and perplexity values were higher for the flash attention architecture than for the MLA architecture configuration models as a whole. However, the 
+flash attention still produced superior textual output.   
+This was likely due to several factors, such as:
+\subsubsection{MLA Implementation and Hyperparameter Selection}
+
+
+
+\subsubsection{Something Else}
+
+% Ending subsubsection
+
+Interestingly, one MLA hyperparamter configuration model (14 layers, 10 transformer heads) had much higher average loss and perplexity values than other configurations. 
+While higher loss and perplexity can often be associated with worse performance, this model model also performed better under the subjective textual analysis.  
+This supports that the models were overfitting.
 
 \subsection{Challenges}
+The leading challenges of this project was the computational power and time required to train and test models. 
+For example, with the MLA architecture, additional testing on MLA-specific hyperparameters, such as number of latent vector and dimensionality of latent 
+nubmer of latent vectors and dimensionality of latent vector space.  
+
+
+\subsubsection{Dataset Size}
 
 \subsubsection{MLA}
 \input{sections/mlachallenges.tex}
@@ -10,3 +30,5 @@
 \subsection{Future Work}
 This project presents numerous opportunities for future work. 
 Further research should include refining the MLA architecture and testing on additional hyperparameters to attempt to prevent the observed overfitting and repetitive words issues.
+In addition, given the appearance of overfitting on the flash attention architecture, it should be tested with additional hyperparameters, as well.
+Finally, results were likely 
