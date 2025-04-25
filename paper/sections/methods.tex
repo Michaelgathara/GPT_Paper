@@ -60,7 +60,7 @@ We implement model parallelism using PyTorch's DistributedDataParallel (DDP) fra
 \end{enumerate}
 \noindent This process continues for a maximum of 15,000 iterations or until convergence.
 \subsubsection{Optimization}
-We optimize our model using AdamW~\cite{loshchilov2018decoupled} with a weight decay of $1 \times 10^{-4}$ and beta parameters $\beta_1 = 0.9$, $\beta_2 = 0.95$. The initial learning rate is set to $1 \times 10^{-3}$.
+We optimize our model using AdamW~\cite{loshchilov2019decoupled} with a weight decay of $1 \times 10^{-4}$ and beta parameters $\beta_1 = 0.9$, $\beta_2 = 0.95$. The initial learning rate is set to $1 \times 10^{-3}$.
 Our learning rate schedule combines a linear warmup phase with a cosine decay phase:
 \begin{equation}
 \text{lr}(t) =
