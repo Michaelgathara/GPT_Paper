@@ -8,6 +8,8 @@ h_0 = W_e \cdot x + W_p
 \noindent where $W_e \in \mathbb{R}^{V \times d}$ is the token embedding matrix for vocabulary size $V$ and embedding dimension $d$, and $W_p \in \mathbb{R}^{n \times d}$ is the positional embedding matrix for a maximum sequence length $n$.
 \subsubsection{Multi-headed Latent Attention (MLA)}
 \input{sections/mla.tex}
+\subsubsection{Flash Attention}
+\input{sections/flash_attn.tex}
 \subsubsection{Feed-Forward Networks}
 After the attention layer, each transformer block contains a feed-forward network using SwiGLU activation~\cite{shazeer2020glu}, which has been shown to outperform ReLU in language models. The feed-forward network is defined as:
 \begin{align}
@@ -95,6 +97,6 @@ And the perplexity is defined as:
       -\tfrac{1}{T}\sum_{t=1}^{T} \log p(w_t \mid w_{<t})
     \bigr),
 \end{equation}
-where $p(w_t \mid w_{<t})$ is the model’s predicted probability of token $w_t$ given its history $w_{<t}$.
+where $p(w_t \mid w_{<t})$ is the model's predicted probability of token $w_t$ given its history $w_{<t}$.
 In addition to these two metrics, we also qualitatively evaluate the model's performance by generating sample text from 
 each of the model checkpoints that we test. 
