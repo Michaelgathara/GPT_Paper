@@ -68,3 +68,24 @@ To prevent gradient explosion, we apply gradient clipping with a maximum norm of
 \subsubsection{Evaluation and Checkpointing}
 We evaluate the model on the validation set every 100 iterations by computing the average loss over multiple batches. The best model is selected based on the lowest validation loss achieved during training. Additionally, we save periodic checkpoints every 500 iterations to enable resumption of training if needed.
 To monitor training progress, we log key metrics including training loss, validation loss, learning rate, and throughput (tokens processed per second) using TensorBoard. After training, we generate sample text from the best checkpoint to qualitatively assess the model's capabilities.
+\subsection{Testing}
+For the testing of our model, we used two different primary metrics: loss and perplexity. The loss function that we utilized both in our model training as 
+well as in the testing is the standard cross-entropy loss i.e. 
+\begin{equation}
+\mathcal{L}_{\text{CE}}
+  \;=\;
+  -\frac{1}{N}\sum_{i=1}^{N}\sum_{c=1}^{C}
+  y_{i,c}\;\log p_{i,c},
+\end{equation}
+where $y_{i,c} \in \{0,1\}$ is the one-hot reference label for example $i$ and class $c$, and $p_{i,c}$ is the model's predicted probability for that class.
+And the perplexity is defined as:
+\begin{equation}
+\operatorname{PPL}
+  \;=\;
+  \exp\!\bigl(
+      -\tfrac{1}{T}\sum_{t=1}^{T} \log p(w_t \mid w_{<t})
+    \bigr),
+\end{equation}
+where $p(w_t \mid w_{<t})$ is the model’s predicted probability of token $w_t$ given its history $w_{<t}$.
+In addition to these two metrics, we also qualitatively evaluate the model's performance by generating sample text from 
+each of the model checkpoints that we test. 
