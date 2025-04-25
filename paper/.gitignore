@@ -2,3 +2,9 @@ main.log
 main.aux
 main.pdf
 *latexmk
+*latexmk
+*gz
+*.aux
+*bbl
+*blg
+*fls

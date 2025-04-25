@@ -23,11 +23,20 @@ Each attention and feed-forward sublayer is wrapped with a residual connection a
   h_{i+1} &= h_{i+\frac12} + \mathrm{FFN}(h''_{i+\frac12})
 \end{align}
 \noindent where $\text{LN}$ denotes layer normalization.
-\subsubsection{Tokenization}
-We train a custom Byte-Pair Encoding (BPE) tokenizer~\cite{sennrich2016neural} on the Wikitext-103 corpus with a vocabulary size of 32,000. The tokenizer includes special tokens \texttt{[PAD]}, \texttt{[UNK]}, \texttt{[CLS]}, \texttt{[SEP]}, \texttt{[MASK]}, \texttt{[BOS]}, and \texttt{[EOS]}. We use whitespace pre-tokenization and set a minimum token frequency of 2 to filter out rare tokens.
+\subsubsection{Custom Byte Pair Encoding}
+\paragraph{Configuration and Hyperparameters}
+We train a custom Byte-Pair Encoding (BPE) tokenizer~\cite{sennrich2016neural} on the Wikitext-103 corpus with a vocabulary size of 25,000. The tokenizer includes special tokens \texttt{[PAD]}, \texttt{[UNK]}, \texttt{[CLS]}, \texttt{[SEP]}, \texttt{[MASK]}, \texttt{[BOS]}, and \texttt{[EOS]}. We use whitespace pre-tokenization and set a minimum token frequency of 2 to filter out rare tokens.
+\paragraph{Data Preprocessing}
+The raw Wikitext-103 training split is first cleaned to remove markup and normalize whitespace. To process the corpus efficiently, we perform the cleaning in grouped batches using multiprocessing. Each cleaned line is then split on whitespace to produce an initial sequence of byte tokens for BPE training. Our cleaning routine leverages pre-compiles regular expressions to strip wiki-specific formatting, correct hyphenation and punctuation spacing, and collapse multiple spaces. The resulting cleaned lines are saved as a newline-delimited file on disk, providing a stable noise-reduced input for the BPE trainer.
+\paragraph{Tokenizer Construction}
+We instantiate a \texttt{Token\allowbreak izer} with a BPE model using \texttt{unk\_token="[UNK]"} to represent out-of-vocabulary subwords. A \texttt{Whitespace} pre-tokenizer is attached to split the cleaned text into initial byte tokens. We then configure a \texttt{BpeTrainer} with our target vocabulary size (25\,000), minimum merge frequency (2), and the reserved special tokens. The trainer drives the merge process, repeatedly identifying and merging the most frequent adjacent byte pairs until the vocabulary size is reached.
+\paragraph{Tokenizer Training and Implementation}
+BPE training is performed in a single pass over the cleaned text, merging byte-pairs until the vocabulary criterion is met. The resulting vocabulary and merge rules are then saved as a JSON file for reproducible tokenization. The system is implemented with the Rust-optimized core of the Hugging Face Tokenizers library, which parallelizes intensive steps across CPU cores, and uses buffered I/O to efficiently manage large files.
+\paragraph{Tokenizer Loading and Consistency}
+At inference, we load the JSON file produced by training; if it's missing, the cleaning and training pipeline is re-invoked automatically. This guarantees that both training and evaluation share an identical subword mapping.
 \subsection{Training}
 \subsubsection{Dataset}
-We train our model on the Wikitext-103 corpus~\cite{merity2016pointer}, a collection of good quality Wikipedia articles containing approximately xxx million tokens. Prior to tokenization, we apply a text cleaning procedure to remove markup elements and normalize whitespace. The cleaned text is then tokenized and chunked into sequences of 512 tokens for training.
+We train our model on the Wikitext-103 corpus~\cite{merity2016pointer}, a collection of good quality Wikipedia articles containing approximately 1.8 million tokens. Prior to tokenization, we apply a text cleaning procedure to remove markup elements and normalize whitespace. The cleaned text is then tokenized and chunked into sequences of 512 tokens for training.
 \subsubsection{Training Process}
 The model is trained using distributed data parallelism across multiple NVIDIA H100 GPUs. We employ mixed precision training (FP16) with gradient scaling to improve computational efficiency while maintaining numerical stability. The training process uses a batch size of 72 per GPU with gradient accumulation over 4 steps, resulting in an effective batch size of 288.
 We implement model parallelism using PyTorch's DistributedDataParallel (DDP) framework. The dataset is partitioned across GPUs using a DistributedSampler to ensure each worker processes different data. The training loop includes the following steps:
@@ -36,14 +45,14 @@ We implement model parallelism using PyTorch's DistributedDataParallel (DDP) fra
     \item Perform a forward pass with mixed precision: $\text{logits}, \text{loss} = \text{model}(x, y)$
     \item Scale the loss
     \item Perform a backward pass with gradient scaling
-    \item If $i \bmod \text{accumulation_steps} = 0$:
+    \item If $i \bmod \text{accumulation\_steps} = 0$:
     \begin{enumerate}
         \item Clip gradients to maximum norm 1.0
         \item Update model parameters
         \item Zero gradients
         \item Update learning rate with scheduler
     \end{enumerate}
-    \item If $i \bmod \text{eval_interval} = 0$:
+    \item If $i \bmod \text{eval\_interval} = 0$:
     \begin{enumerate}
         \item Evaluate on validation set
         \item Save checkpoint if validation loss improved
@@ -51,12 +60,12 @@ We implement model parallelism using PyTorch's DistributedDataParallel (DDP) fra
 \end{enumerate}
 \noindent This process continues for a maximum of 15,000 iterations or until convergence.
 \subsubsection{Optimization}
-We optimize our model using AdamW~\cite{loshchilov2018decoupled} with a weight decay of $1 \times 10^{-4}$ and beta parameters $\beta_1 = 0.9$, $\beta_2 = 0.95$. The initial learning rate is set to $1 \times 10^{-3}$.
+We optimize our model using AdamW~\cite{loshchilov2019decoupled} with a weight decay of $1 \times 10^{-4}$ and beta parameters $\beta_1 = 0.9$, $\beta_2 = 0.95$. The initial learning rate is set to $1 \times 10^{-3}$.
 Our learning rate schedule combines a linear warmup phase with a cosine decay phase:
 \begin{equation}
 \text{lr}(t) =
 \begin{cases}
-\text{lr}{\text{max}} \cdot \frac{t}{\text{warmup}} & \text{if } t < \text{warmup} \\
+\text{lr}_{\text{max}} \cdot \frac{t}{\text{warmup}} & \text{if } t < \text{warmup} \\
 \ldots
 \end{cases}
 \end{equation}
