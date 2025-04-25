@@ -11,7 +11,7 @@ h_0 = W_e \cdot x + W_p
 \subsubsection{Feed-Forward Networks}
 After the attention layer, each transformer block contains a feed-forward network using SwiGLU activation~\cite{shazeer2020glu}, which has been shown to outperform ReLU in language models. The feed-forward network is defined as:
 \begin{align}
-\text{Swish}(xW_1) \otimes (xW_2) \\
+\text{Swish}(xW_1) \otimes (xW_2) \
 \text{FFN}(x) = \text{SwiGLU}(x)W_3
 \end{align}
 \noindent where $W_1, W_2 \in \mathbb{R}^{d \times 4d}$ and $W_3 \in \mathbb{R}^{4d \times d}$ are learned parameter matrices, $\text{Swish}(x) = x \cdot \sigma(x)$ is the swish activation function, and $\otimes$ represents element-wise multiplication.
