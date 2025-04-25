@@ -1,6 +1,6 @@
 We present a transformer-based language model that employs a novel attention mechanism called Multi-headed Latent Attention (MLA). This section details the architecture of our model and the training methodology.
 \subsection{Model Architecture}
-Our model follows the general transformer architecture~\cite{vaswani2017attention} with several key modifications. The main model consists of 12 transformer layers, each containing a multiheaded latent attention module and a feed-forward network. We use an embedding dimension of 768 and 12 attention heads throughout the model. The context window is limited to 512 tokens.
+Our model follows the general transformer architecture~\cite{vaswani2017attentionneed} with several key modifications. The main model consists of 12 transformer layers, each containing a multiheaded latent attention module and a feed-forward network. We use an embedding dimension of 768 and 12 attention heads throughout the model. The context window is limited to 512 tokens.
 The input token sequence is first embedded using a token embedding layer and combined with learned positional embeddings:
 \begin{equation}
 h_0 = W_e \cdot x + W_p
