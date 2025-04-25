@@ -1,14 +1,7 @@
-Results from model training and testing fell into three categories: subjective assessment of text output quality, loss, and perplexity.
-\subsection{Subjective Assessment of Text Output Quality}
-Text output from training and validation of each model configuration was reviewed by multiple team members. 
-Several models were also provided custom prompts and output was assesed.
-Taking into consideration factors such as sentence structure, text coherence, and word variability, the flash attention performed superiorly to MLA for all models tested\n.
+Results from model training and testing fell into three categories: loss, and perplexity, and subjective assessment of text output quality.
 
-General sentence flow and content for the flash attention model was readable and fairly coherent but generally lacked specificty and detail.  
-Overall MLA models produced far less coherent text than the flash attention and contained may reptitions of a single word, which varied from model to model.
-For MLA, models with higher loss and perplexity performed superiorly, suggesting a tendency for the models to overfit at the tested parameters.
 \subsection{Loss and Perplexity}
-Average model loss, best model loss, and perplexity were collected for all tested models. (see Figures \ref{best_loss}, \ref{avg_loss}, and \ref{perplexity}).
+Average model loss, best model loss, and perplexity were collected for all tested models. (see Figures \ref{vbest_loss}, \ref{avg_loss}, and \ref{perplexity}).
 
 \begin{figure}[H]
     \centering
@@ -30,3 +23,12 @@ Average model loss, best model loss, and perplexity were collected for all teste
     \caption{Perplexity loss for all tested models. L represents number of transformer layers. H represents number of attention heads.}
     \label{perplexity}
 \end{figure}
+
+\subsection{Subjective Assessment of Text Output Quality}
+Text output from training and validation of each model configuration was reviewed by multiple team members. 
+Several models were also provided custom prompts and output was assesed.
+Taking into consideration factors such as sentence structure, text coherence, and word variability, the flash attention performed superiorly to MLA for all models tested\n.
+
+General sentence flow and content for the flash attention model was readable and fairly coherent but generally lacked specificty and detail.  
+Overall MLA models produced far less coherent text than the flash attention and contained may reptitions of a single word, which varied from model to model.
+For MLA, models with higher loss and perplexity performed superiorly, suggesting a tendency for the models to overfit at the tested parameters.
