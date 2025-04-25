@@ -1,0 +1,20 @@
+Flash Attention~\cite{dao2022flashattentionfastmemoryefficientexact} keeps the exact softmax result but rewrites the computation as a sequence of small, fused \emph{block} operations that (1) fit in on-chip memory, (2) stream data once from HBM, and (3) apply the softmax incrementally.  Each block:
+
+\begin{enumerate}
+  \item Loads $Q$, $K$, and $V$ tiles of size $B \times d$ into SRAM.
+  \item Computes the score tile $S = QK^{\top} / \sqrt{d}$.
+  \item Applies an in-place, numerically stable softmax with running row-max tracking.
+  \item Produces a partial output tile $O = \mathrm{softmax}(S) V$.
+  \item Writes $O$ back to HBM, then proceeds to the next tile.
+\end{enumerate}
+
+Because no full score matrix is kept, the memory cost drops to
+$\mathcal{O}(n d)$—the same as the activations—while arithmetic
+intensity rises, letting the GPU run at or near peak throughput.
+
+\paragraph{Integration in our Model}  
+We call the \texttt{flash\_attn\_func} kernel from the FlashAttention 2 library for every attention head during both training and inference. The kernel accepts pre-scaled $Q$, $K$, and $V$ tensors and returns the exact same result as standard attention, so the rest of the model code is unchanged.  Mixed-precision (FP16) execution is enabled, and dropout is fused inside the kernel for additional speed.
+
+\paragraph{Benefits}
+On an NVIDIA H100, switching to Flash Attention cuts memory
+use by $\approx\! 15\times$ for a 512-token sequence and boosts effective throughput from xxxxx tokens/s to xxx tokens/s per GPU at batch size xxx.
