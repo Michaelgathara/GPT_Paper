@@ -5,7 +5,7 @@ The input token sequence is first embedded using a token embedding layer and com
 \begin{equation}
 h_0 = W_e \cdot x + W_p
 \end{equation}
-\noindent where $W_e \in \mathbb{R}^{V \times d}$ is the token embedding matrix for vocabulary size $V$ and embedding dimension $d$, and $W_p \in \mathbb{R}^{n \times d}$ is the positional embedding matrix for a maximum sequence length $n$.
+\noindent where $W_e \in \mathbb{R}^{V \times d}$ is the token embedding matrix for vocabulary size $V$ and embedding dimension $d$, and $W_p \in \mathbb{R}^{n \times d}$ is the positional embedding matrix for a maximum sequence length $n$. We built two separate attention mechanisms:
 \subsubsection{Multi-headed Latent Attention (MLA)}
 \input{sections/mla.tex}
 \subsubsection{Flash Attention}
