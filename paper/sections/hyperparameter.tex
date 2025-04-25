@@ -1,5 +1,5 @@
 To optimize model performance, hyperparameter tuning and testing was performed on the flash attention and MLA architectures. 
-Both architectures were trained for 5000 iterations on nine combinations of three transformer layer values (10, 12, and 14) and three attention head values (8, 10, and 12). 
+Both architectures were trained for 5000 iterations on nine combinations of three transformer layer values (10, 12, and 14) and three attention head values (8, 10, and 12). Best validation model loss was collected.
 These hyperparameters were selected for potential for noticeable impact on model performance.
 All other hyperparameters remained the same during training and testing except for embedding dimensions which were adjusted to 760 (from 768) for models trained with 10 attention heads. 
 This was done to account for the requirement that the number of attention heads evenly divide the embedding dimensions. A test dataset was then used to calculate average model loss and perplexity values for each of the nine hyperparamater combinations to further assess and compare model performances.
