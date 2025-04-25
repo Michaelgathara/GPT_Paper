@@ -34,7 +34,7 @@ suffered from the same core limitations of the original transformer setup that t
 
 In the present work, we implement a from-scratch trained GPT architecture but we also explore some of the 
 optimizations that have been introduced to address the aformentioned limitations of the transformer architecture. 
-Two of the core optimizations that we utilize are flash-attention and multi-layer attention. Flash attention  addresses
+Two of the core optimizations that we utilize are flash-attention and multi-head latent attention. Flash attention  addresses
 the issue of quadratic memory complexity in the original attention mechanism- an issue that significantly slows down 
 the computation as expensive GPU memory transfers abound with full attention scores being computed and scored. 
 Flash attention focuses on making the attention mechanism input/output (IO) aware and splits the computations 
