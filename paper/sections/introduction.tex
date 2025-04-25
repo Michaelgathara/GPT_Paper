@@ -1,5 +1,5 @@
-In recent years, artificial intelligence (AI) models have been gaining popularity in both personal use-cases 
-as well as in many different industries. Among these, none seem to have risen to such a high level of 
+In recent years, artificial intelligence (AI) models have been gaining popularity in both personal use 
+as well as in industry adoption. Among these models, none seem to have risen to such a high level of 
 popular adoption as large language models (LLMs) which are AI models that can intake, understand, and generate
 human-readable text \cite{brown2020languagemodelsfewshotlearners}. Usage of these has gained traction in a broad 
 range of industries including 
@@ -38,5 +38,5 @@ Two of the core optimizations that we utilize are flash-attention and multi-laye
 the issue of quadratic memory complexity in the original attention mechanism- an issue that significantly slows down 
 the computation as expensive GPU memory transfers abound with full attention scores being computed and scored. 
 Flash attention focuses on making the attention mechanism input/output (IO) aware and splits the computations 
-into tiles that can fit on a GPUs on-chip memory and eschew temporally costly IO operations \cite{dao2022flashattentionfastmemoryefficientexact}. In our setup, we 
-use flash attention and see significant improvements in our model training time as well as inference 
+into tiles that can fit on a GPUs on-chip memory and eschew temporally costly IO operations \cite{dao2022flashattentionfastmemoryefficientexact}.
+ In our setup, we use flash attention and see significant improvements in our model training time as well as inference.
