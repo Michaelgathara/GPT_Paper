@@ -1,6 +1,6 @@
 We present a transformer-based language model that employs a novel attention mechanism called Multi-headed Latent Attention (MLA). This section details the architecture of our model and the training methodology.
 \subsection{Model Architecture}
-Our model follows the general transformer architecture~\cite{vaswani2017attention} with several key modifications. The model consists of 12 transformer layers, each containing a multiheaded latent attention module and a feed-forward network. We use an embedding dimension of 768 and 12 attention heads throughout the model. The context window is limited to 512 tokens.
+Our model follows the general transformer architecture~\cite{vaswani2023attentionneed} with several key modifications. The model consists of 12 transformer layers, each containing a multiheaded latent attention module and a feed-forward network. We use an embedding dimension of 768 and 12 attention heads throughout the model. The context window is limited to 512 tokens.
 The input token sequence is first embedded using a token embedding layer and combined with learned positional embeddings:
 \begin{equation}
 h_0 = W_e \cdot x + W_p
@@ -11,7 +11,7 @@ h_0 = W_e \cdot x + W_p
 \subsubsection{Feed-Forward Networks}
 After the attention layer, each transformer block contains a feed-forward network using SwiGLU activation~\cite{shazeer2020glu}, which has been shown to outperform ReLU in language models. The feed-forward network is defined as:
 \begin{align}
-\text{Swish}(xW_1) \otimes (xW_2) \
+\text{Swish}(xW_1) \otimes (xW_2) \\
 \text{FFN}(x) = \text{SwiGLU}(x)W_3
 \end{align}
 \noindent where $W_1, W_2 \in \mathbb{R}^{d \times 4d}$ and $W_3 \in \mathbb{R}^{4d \times d}$ are learned parameter matrices, $\text{Swish}(x) = x \cdot \sigma(x)$ is the swish activation function, and $\otimes$ represents element-wise multiplication.
@@ -36,14 +36,14 @@ We implement model parallelism using PyTorch's DistributedDataParallel (DDP) fra
     \item Perform a forward pass with mixed precision: $\text{logits}, \text{loss} = \text{model}(x, y)$
     \item Scale the loss
     \item Perform a backward pass with gradient scaling
-    \item If $i \bmod \text{accumulation_steps} = 0$:
+    \item If $i \bmod \text{accumulation\_steps} = 0$:
     \begin{enumerate}
         \item Clip gradients to maximum norm 1.0
         \item Update model parameters
         \item Zero gradients
         \item Update learning rate with scheduler
     \end{enumerate}
-    \item If $i \bmod \text{eval_interval} = 0$:
+    \item If $i \bmod \text{eval\_interval} = 0$:
     \begin{enumerate}
         \item Evaluate on validation set
         \item Save checkpoint if validation loss improved
@@ -56,7 +56,7 @@ Our learning rate schedule combines a linear warmup phase with a cosine decay ph
 \begin{equation}
 \text{lr}(t) =
 \begin{cases}
-\text{lr}{\text{max}} \cdot \frac{t}{\text{warmup}} & \text{if } t < \text{warmup} \\
+\text{lr}_{\text{max}} \cdot \frac{t}{\text{warmup}} & \text{if } t < \text{warmup} \\
 \ldots
 \end{cases}
 \end{equation}
